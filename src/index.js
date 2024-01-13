@@ -1,2 +1,4 @@
-import "./styles.css";
-console.log("hello world!");
+import "./style.css";
+import "./tailwind.css";
+
+// index.js

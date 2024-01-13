@@ -1,62 +1,70 @@
-const webpack = require("webpack");
+// Generated using webpack-cli https://github.com/webpack/webpack-cli
+
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const isProduction = process.env.NODE_ENV == "production";
+
+const stylesHandler = isProduction
+  ? MiniCssExtractPlugin.loader
+  : "style-loader";
 
 const config = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
   },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 1,
-            },
-          },
-          "postcss-loader",
-        ],
-      },
-      {
-        test: /\.png$/,
-        use: [
-          {
-            loader: "url-loader",
-            options: {
-              mimetype: "image/png",
-            },
-          },
-        ],
-      },
-      {
-        test: /\.svg$/,
-        use: "file-loader",
-      },
-    ],
+  optimization: {
+    usedExports: true,
+  },
+  devServer: {
+    static: "dist",
+    hot: true,
+  },
+  watchOptions: {
+    ignored: /node_modules/,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      templateContent: ({ htmlWebpackPlugin }) =>
-        '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' +
-        htmlWebpackPlugin.options.title +
-        '</title></head><body><div id="app"></div></body></html>',
-      filename: "index.html",
+      template: "./src/index.html",
     }),
-    new MiniCssExtractPlugin(),
-    new CleanWebpackPlugin(),
-    new CopyPlugin({
-      patterns: [{ from: "src/index.html" }],
-    }),
+
+    // Add your plugins here
+    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: [stylesHandler, "css-loader", "postcss-loader"],
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        type: "asset",
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+      },
+      // Add your rules for custom modules here
+      // Learn more about loaders from https://webpack.js.org/loaders/
+    ],
+  },
 };
 
-module.exports = config;
+module.exports = () => {
+  if (isProduction) {
+    config.mode = "production";
+
+    config.optimization = {
+      minimize: true,
+      minimizer: [`...`, new CssMinimizerPlugin()],
+    };
+
+    config.plugins.push(new MiniCssExtractPlugin());
+  } else {
+    config.mode = "development";
+  }
+  return config;
+};
