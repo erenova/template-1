@@ -49,12 +49,9 @@ const config = {
         type: "asset/resource",
       },
       {
-        test: /\.(?:js|mjs|cjs)$/,
+        test: /\.js$/,
+        use: "babel-loader",
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          // .babelrc dosyasındaki yapılandırmalar burada kullanılacaktır
-        },
       },
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
