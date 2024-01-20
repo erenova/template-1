@@ -4,7 +4,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const isProduction = process.env.NODE_ENV == "production";
+
+const isProduction = process.env.NODE_ENV === "production";
 
 const stylesHandler = isProduction
   ? MiniCssExtractPlugin.loader
@@ -46,6 +47,14 @@ const config = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
+      },
+      {
+        test: /\.(?:js|mjs|cjs)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          // .babelrc dosyasındaki yapılandırmalar burada kullanılacaktır
+        },
       },
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
