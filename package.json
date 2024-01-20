@@ -29,6 +29,7 @@
     "mini-css-extract-plugin": "^2.7.6",
     "postcss": "^8.4.33",
     "postcss-loader": "^7.3.3",
+    "prettier": "^3.2.4",
     "style-loader": "^3.3.4",
     "tailwindcss": "^3.4.1",
     "webpack": "^5.89.0",
