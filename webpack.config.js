@@ -53,7 +53,6 @@ const config = {
         use: "babel-loader",
         exclude: /node_modules/,
       },
-      // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
